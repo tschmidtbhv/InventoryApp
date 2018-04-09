@@ -90,9 +90,13 @@ public class ProductContract {
         /**
          * Possible product variants
          * Note to reviewer: Will be used for next Version
+         * Currently needed for link Comment
          */
         public static final int PRODUCTVARIANT_NO_VARIANT = 0;
-
+        public static final int PRODUCTVARIANT_SIZE_S = 1;
+        public static final int PRODUCTVARIANT_SIZE_M = 2;
+        public static final int PRODUCTVARIANT_SIZE_L = 3;
+        public static final int PRODUCTVARIANT_SIZE_XL = 4;
 
     }
 }
