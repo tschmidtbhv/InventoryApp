@@ -135,9 +135,11 @@ public final class QueryHelper {
             long rowId = database.insert(ProductEntry.TABLENAME, null ,values);
             if(rowId == -1 ){
                 Toast.makeText(context, context.getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
+                database.close();
                 return;
             }
         }
 
+        database.close();
     }
 }
