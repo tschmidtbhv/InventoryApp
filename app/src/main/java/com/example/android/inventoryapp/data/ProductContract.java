@@ -61,6 +61,8 @@ public class ProductContract {
          * Optional value if the product has variants
          * <p>
          * possible product variants are {@link #PRODUCTVARIANT_NO_VARIANT},
+         * {@link #PRODUCTVARIANT_SIZE_S}, {@link #PRODUCTVARIANT_SIZE_M}
+         * {@link #PRODUCTVARIANT_SIZE_L} or {@link #PRODUCTVARIANT_SIZE_XL}
          * <p>
          * Type INTEGER
          * DEFAULT 0
@@ -89,6 +91,10 @@ public class ProductContract {
          * Possible product variants
          */
         public static final int PRODUCTVARIANT_NO_VARIANT = 0;
+        public static final int PRODUCTVARIANT_SIZE_S = 1;
+        public static final int PRODUCTVARIANT_SIZE_M = 2;
+        public static final int PRODUCTVARIANT_SIZE_L = 3;
+        public static final int PRODUCTVARIANT_SIZE_XL = 4;
 
     }
 }

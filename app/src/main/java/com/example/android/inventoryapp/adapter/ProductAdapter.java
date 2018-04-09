@@ -1,6 +1,7 @@
 package com.example.android.inventoryapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.inventoryapp.EditActivity;
 import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.Product;
 
@@ -31,6 +33,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             idTextView = itemView.findViewById(R.id.id);
             productNameTextView = itemView.findViewById(R.id.name);
             productPriceTextView = itemView.findViewById(R.id.price);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, EditActivity.class);
+                    //TODO PARSE DATA
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 
