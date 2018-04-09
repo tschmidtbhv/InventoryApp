@@ -81,7 +81,7 @@ public class ProductContract {
         /**
          * Column for supplier phone nr
          * <p>
-         * Type INTEGER
+         * Type TEXT
          */
 
         public final static String COLUMN_SUPPLIER_PHONENR = "supplierphonenr";
@@ -89,6 +89,7 @@ public class ProductContract {
 
         /**
          * Possible product variants
+         * Note to reviewer: Will be used for next Version
          */
         public static final int PRODUCTVARIANT_NO_VARIANT = 0;
         public static final int PRODUCTVARIANT_SIZE_S = 1;
