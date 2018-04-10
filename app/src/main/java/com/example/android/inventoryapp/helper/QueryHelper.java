@@ -1,9 +1,11 @@
 package com.example.android.inventoryapp.helper;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.R;
@@ -48,14 +50,10 @@ public final class QueryHelper {
      */
     public static List<Product> loadContentFromDb(Context context) {
 
-        ProductDbHelper dbHelper = new ProductDbHelper(context);
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        Cursor cursor = database.query(
-                ProductContract.ProductEntry.TABLENAME,
+        Cursor cursor = context.getContentResolver().query(
+                ProductEntry.PRODUCTS_CONTENT_URI,
                 PROJECTION,
-                null,
-                null,
                 null,
                 null,
                 null);
@@ -118,8 +116,7 @@ public final class QueryHelper {
      */
     public static void createDummyDataInDataBase(Context context, int count){
 
-        ProductDbHelper dbHelper = new ProductDbHelper(context);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentResolver resolver = context.getContentResolver();
 
         for(int i = 0; i < count; i++){
 
@@ -132,14 +129,25 @@ public final class QueryHelper {
             values.put(ProductEntry.COLUMN_SUPPLIERNAME, context.getString(R.string.suppliername, tempProductCounter));
             values.put(ProductEntry.COLUMN_SUPPLIER_PHONENR,Config.DUMMYPHONENUMBER);
 
-            long rowId = database.insert(ProductEntry.TABLENAME, null ,values);
-            if(rowId == -1 ){
+            Uri rowUri = resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI,values);
+            if(rowUri == null){
                 Toast.makeText(context, context.getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
-                database.close();
                 return;
             }
         }
 
-        database.close();
+    }
+
+    /**
+     * Delete Product with given id
+     * @param context current contest
+     * @param id product id
+     * @return int
+     */
+    public static int deleteItemWithId(Context context, int id){
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri uri = Uri.withAppendedPath(ProductContract.ProductEntry.PRODUCTS_CONTENT_URI,String.valueOf(id));
+        return resolver.delete(uri,null,null);
     }
 }

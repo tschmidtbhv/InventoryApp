@@ -1,6 +1,8 @@
 package com.example.android.inventoryapp;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 
 import com.example.android.inventoryapp.adapter.ProductAdapter;
 import com.example.android.inventoryapp.data.Product;
+import com.example.android.inventoryapp.data.ProductContract;
 import com.example.android.inventoryapp.helper.Config;
 import com.example.android.inventoryapp.helper.QueryHelper;
 
@@ -47,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         startActivity(intent);
+
         return true;
     }
+
+
 }

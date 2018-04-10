@@ -25,6 +25,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.inventoryapp.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.example.android.inventoryapp"
+            android:name=".provider.ProductProvider"/>
     </application>
 
 </manifest>

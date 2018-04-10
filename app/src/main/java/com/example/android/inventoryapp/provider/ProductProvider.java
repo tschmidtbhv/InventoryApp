@@ -1,0 +1,137 @@
+package com.example.android.inventoryapp.provider;
+
+import android.content.ContentProvider;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.example.android.inventoryapp.data.ProductContract;
+import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
+import com.example.android.inventoryapp.data.ProductDbHelper;
+
+/**
+ * InventoryApp
+ * Created by Thomas Schmidt on 10.04.2018.
+ */
+public class ProductProvider extends ContentProvider {
+
+    private final static int PRODUCTS = 1;
+    private final static int PRODUCT_ID = 2;
+
+    private final static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+
+        //URI for * Products
+        sUriMatcher.addURI(ProductContract.CONTENT_AUTHORITY, ProductContract.PRODUCTS_PATH, PRODUCTS);
+
+        //URI for ID products table
+        sUriMatcher.addURI(ProductContract.CONTENT_AUTHORITY, ProductContract.PRODUCTS_PATH + "/#", PRODUCT_ID);
+    }
+
+    private ProductDbHelper dbHelper;
+
+    @Override
+    public boolean onCreate() {
+
+        dbHelper = new ProductDbHelper(getContext());
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+
+        Log.v(ProductProvider.class.getSimpleName(), "query -----------------------------------");
+
+        int matchID = sUriMatcher.match(uri);
+
+        Cursor cursor = null;
+        switch (matchID){
+
+            case PRODUCTS:
+                Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS");
+                cursor = loadProducts(uri, projection);
+                break;
+
+            case PRODUCT_ID:
+                Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS ID");
+                break;
+                default:
+                    throw new  IllegalArgumentException("INSERT NOT ALLOWED FOR " + uri);
+        }
+
+        return cursor;
+    }
+
+    private Cursor loadProducts(Uri uri, String[] projection) {
+
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor cursor = database.query(
+                ProductEntry.TABLENAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+
+        return cursor;
+    }
+
+    @Nullable
+    @Override
+    public String getType(@NonNull Uri uri) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+
+        Log.v(ProductProvider.class.getSimpleName(), "INSERT ");
+        String name = values.getAsString(ProductEntry.COLUMN_PRODUCTNAME);
+        if(name == null ) return null;
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        long id = database.insert(ProductEntry.TABLENAME,
+                null,values);
+
+        if(id == -1) return null;
+
+        return ContentUris.withAppendedId(uri,id);
+    }
+
+    @Override
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        selection = ProductEntry.COLUMN_ID + "=?";
+        selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+        long id = database.delete(ProductEntry.TABLENAME,selection, selectionArgs);
+
+        return (int)id;
+    }
+
+    @Override
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        selection = ProductEntry.COLUMN_ID + "=?";
+        selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+        long id = database.update(ProductEntry.TABLENAME,values,selection,selectionArgs);
+
+        if(id == -1)return (int)id;
+
+        return 0;
+    }
+}
