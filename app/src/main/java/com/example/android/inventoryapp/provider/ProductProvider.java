@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.ProductContract;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
 import com.example.android.inventoryapp.data.ProductDbHelper;
@@ -53,7 +54,7 @@ public class ProductProvider extends ContentProvider {
         int matchID = sUriMatcher.match(uri);
 
         Cursor cursor = null;
-        switch (matchID){
+        switch (matchID) {
 
             case PRODUCTS:
                 Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS");
@@ -63,8 +64,8 @@ public class ProductProvider extends ContentProvider {
             case PRODUCT_ID:
                 Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS ID");
                 break;
-                default:
-                    throw new  IllegalArgumentException("INSERT NOT ALLOWED FOR " + uri);
+            default:
+                throw new IllegalArgumentException("INSERT NOT ALLOWED FOR " + uri);
         }
 
         return cursor;
@@ -98,40 +99,68 @@ public class ProductProvider extends ContentProvider {
 
         Log.v(ProductProvider.class.getSimpleName(), "INSERT ");
         String name = values.getAsString(ProductEntry.COLUMN_PRODUCTNAME);
-        if(name == null ) return null;
+        if (name == null)
+            throw new IllegalArgumentException(getContext().getString(R.string.name_required) + uri);
+
+        Integer productVariant = values.getAsInteger(ProductEntry.COLUMN_PRODUCTVARIANT);
+        if (productVariant == null || !ProductEntry.isValidVariant(productVariant))
+            throw new IllegalArgumentException(getContext().getString(R.string.variant_required));
+
+        Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCTPRICE);
+        if (price == null || price < 0)
+            throw new IllegalArgumentException(getContext().getString(R.string.price_required));
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         long id = database.insert(ProductEntry.TABLENAME,
-                null,values);
+                null, values);
 
-        if(id == -1) return null;
+        if (id == -1) return null;
 
-        return ContentUris.withAppendedId(uri,id);
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        int matchId = sUriMatcher.match(uri);
+
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        selection = ProductEntry.COLUMN_ID + "=?";
-        selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
-        long id = database.delete(ProductEntry.TABLENAME,selection, selectionArgs);
 
-        return (int)id;
+        switch (matchId) {
+
+            case PRODUCT_ID:
+                selection = ProductEntry.COLUMN_ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.delete(ProductEntry.TABLENAME, selection, selectionArgs);
+
+            default:
+
+                throw new IllegalArgumentException(getContext().getString(R.string.delete_error));
+
+        }
+
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
 
+        int matchId = sUriMatcher.match(uri);
+
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        selection = ProductEntry.COLUMN_ID + "=?";
-        selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+        switch (matchId) {
 
-        long id = database.update(ProductEntry.TABLENAME,values,selection,selectionArgs);
+            case PRODUCTS:
+                return 0;
 
-        if(id == -1)return (int)id;
+            case PRODUCT_ID:
+                selection = ProductEntry.COLUMN_ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.update(ProductEntry.TABLENAME, values, selection, selectionArgs);
+            default:
 
-        return 0;
+                throw new IllegalArgumentException(getContext().getString(R.string.update_error));
+        }
     }
 }

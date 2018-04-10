@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.widget.Toast;
 
@@ -12,7 +11,6 @@ import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.Product;
 import com.example.android.inventoryapp.data.ProductContract;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
-import com.example.android.inventoryapp.data.ProductDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,26 +109,27 @@ public final class QueryHelper {
 
     /**
      * Insert Dummy data into DB
+     *
      * @param context Act Context
-     * @param count how many dummy data will create
+     * @param count   how many dummy data will create
      */
-    public static void createDummyDataInDataBase(Context context, int count){
+    public static void createDummyDataInDataBase(Context context, int count) {
 
         ContentResolver resolver = context.getContentResolver();
 
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
 
-            int tempProductCounter = i +1;
+            int tempProductCounter = i + 1;
             ContentValues values = new ContentValues();
             values.put(ProductEntry.COLUMN_PRODUCTNAME, context.getString(R.string.productname, tempProductCounter));
             values.put(ProductEntry.COLUMN_PRODUCTPRICE, Config.DUMMYPRICE);
             values.put(ProductEntry.COLUMN_PRODUCTQUANTITY, Config.DUMMYQUANTITY);
-            values.put(ProductEntry.COLUMN_PRODUCTVARIANT,ProductEntry.PRODUCTVARIANT_NO_VARIANT);
+            values.put(ProductEntry.COLUMN_PRODUCTVARIANT, ProductEntry.PRODUCTVARIANT_NO_VARIANT);
             values.put(ProductEntry.COLUMN_SUPPLIERNAME, context.getString(R.string.suppliername, tempProductCounter));
-            values.put(ProductEntry.COLUMN_SUPPLIER_PHONENR,Config.DUMMYPHONENUMBER);
+            values.put(ProductEntry.COLUMN_SUPPLIER_PHONENR, Config.DUMMYPHONENUMBER);
 
-            Uri rowUri = resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI,values);
-            if(rowUri == null){
+            Uri rowUri = resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI, values);
+            if (rowUri == null) {
                 Toast.makeText(context, context.getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -140,14 +139,15 @@ public final class QueryHelper {
 
     /**
      * Delete Product with given id
+     *
      * @param context current contest
-     * @param id product id
+     * @param id      product id
      * @return int
      */
-    public static int deleteItemWithId(Context context, int id){
+    public static int deleteItemWithId(Context context, int id) {
         ContentResolver resolver = context.getContentResolver();
 
-        Uri uri = Uri.withAppendedPath(ProductContract.ProductEntry.PRODUCTS_CONTENT_URI,String.valueOf(id));
-        return resolver.delete(uri,null,null);
+        Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(id));
+        return resolver.delete(uri, null, null);
     }
 }

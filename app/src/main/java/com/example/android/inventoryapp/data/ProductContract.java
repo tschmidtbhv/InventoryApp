@@ -26,7 +26,7 @@ public class ProductContract {
      */
     public static final class ProductEntry implements BaseColumns {
 
-        public final static Uri PRODUCTS_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI,PRODUCTS_PATH);
+        public final static Uri PRODUCTS_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PRODUCTS_PATH);
 
         //Name for the DB Table
         public final static String TABLENAME = "products";
@@ -104,6 +104,15 @@ public class ProductContract {
         public static final int PRODUCTVARIANT_SIZE_M = 2;
         public static final int PRODUCTVARIANT_SIZE_L = 3;
         public static final int PRODUCTVARIANT_SIZE_XL = 4;
+
+        public static boolean isValidVariant(int variant) {
+            return (variant == PRODUCTVARIANT_NO_VARIANT
+                    || variant == PRODUCTVARIANT_SIZE_S
+                    || variant == PRODUCTVARIANT_SIZE_M
+                    || variant == PRODUCTVARIANT_SIZE_L
+                    || variant == PRODUCTVARIANT_SIZE_XL);
+
+        }
 
     }
 }
