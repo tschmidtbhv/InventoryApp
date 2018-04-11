@@ -44,19 +44,20 @@
             app:layout_constraintTop_toTopOf="@+id/prod_price" />
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="@string/prod_quantity"
-            app:layout_constraintBottom_toBottomOf="@+id/prod_quantity"
-            app:layout_constraintEnd_toStartOf="@+id/prod_quantity"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/prod_quantity" />
+            app:layout_constraintTop_toBottomOf="@+id/prod_price" />
 
         <TextView
             android:layout_width="0dp"
@@ -114,15 +115,18 @@
 
         <EditText
             android:id="@+id/prod_quantity"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/prod_price" />
+            app:layout_constraintEnd_toStartOf="@+id/deacreaseButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
         <EditText
             android:id="@+id/prod_supplier_name"
@@ -130,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:ems="10"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,6 +153,7 @@
             app:layout_constraintTop_toBottomOf="@+id/prod_supplier_name" />
 
         <TextView
+            android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -172,6 +177,44 @@
             android:entries="@array/spinner_items"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/prod_supplier_phone" />
+
+        <Button
+            android:id="@+id/callsupplierButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/call_supplier"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <Button
+            android:id="@+id/increaseButton"
+            android:layout_width="@dimen/buttons"
+            android:layout_height="@dimen/buttons"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="+"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <Button
+            android:id="@+id/deacreaseButton"
+            android:layout_width="@dimen/buttons"
+            android:layout_height="@dimen/buttons"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="-"
+            app:layout_constraintEnd_toStartOf="@+id/increaseButton"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
