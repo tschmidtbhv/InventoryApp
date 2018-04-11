@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.R;
@@ -31,7 +33,7 @@ public final class QueryHelper {
             + ProductEntry.COLUMN_SUPPLIERNAME + " TEXT NOT NULL, "
             + ProductEntry.COLUMN_SUPPLIER_PHONENR + " TEXT); ";
 
-    private static String[] PROJECTION = {
+    public static String[] PROJECTION = {
             ProductEntry.COLUMN_ID,
             ProductEntry.COLUMN_PRODUCTNAME,
             ProductEntry.COLUMN_PRODUCTPRICE,
@@ -86,11 +88,10 @@ public final class QueryHelper {
      * @param cursor cursor db
      * @return List of Products from DB
      */
-    private static List<Product> createProductListFromCursor(Cursor cursor) {
+    public static List<Product> createProductListFromCursor(Cursor cursor) {
         List<Product> products = new ArrayList<>();
         try {
             if (cursor != null) {
-
                 int[] columns = createColumnIndexArray(cursor);
 
                 while (cursor.moveToNext()) {
@@ -105,7 +106,7 @@ public final class QueryHelper {
         return products;
     }
 
-    private static Product createProduct(Cursor cursor, int[] columns) {
+    public static Product createProduct(Cursor cursor, int[] columns) {
 
         int id = cursor.getInt(columns[0]);
         String name = cursor.getString(columns[1]);
@@ -127,7 +128,7 @@ public final class QueryHelper {
         return product;
     }
 
-    private static int[] createColumnIndexArray(Cursor cursor) {
+    public static int[] createColumnIndexArray(Cursor cursor) {
         int idColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_ID);
         int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCTNAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCTPRICE);
@@ -179,7 +180,6 @@ public final class QueryHelper {
      */
     public static int deleteItemWithId(Context context, int id) {
         ContentResolver resolver = context.getContentResolver();
-
         Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(id));
         return resolver.delete(uri, null, null);
     }

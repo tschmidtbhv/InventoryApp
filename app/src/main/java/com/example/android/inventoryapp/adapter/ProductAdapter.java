@@ -3,10 +3,13 @@ package com.example.android.inventoryapp.adapter;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +28,12 @@ import java.util.List;
  * InventoryApp
  * Created by Thomas Schmidt on 09.04.2018.
  */
+
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+
+    public interface ReloadInterface{
+        void reload();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -35,8 +43,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         Button cartButton;
 
-        public ViewHolder(View itemView) {
+
+        public ViewHolder(final View itemView) {
             super(itemView);
+
 
             productNameTextView = itemView.findViewById(R.id.name);
             productPriceTextView = itemView.findViewById(R.id.price);
@@ -59,7 +69,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                             null,
                             null);
 
-                    updateData(QueryHelper.loadContentFromDb(mContext));
+                    ReloadInterface reloadInterface = (ReloadInterface)mContext;
+                    reloadInterface.reload();
                 }
             });
 
@@ -78,6 +89,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     private Context mContext;
     private List<Product> mProductList;
+    private Cursor mCursor;
 
     public ProductAdapter(Context mContext, List<Product> productList) {
         this.mContext = mContext;
@@ -107,14 +119,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return mProductList.size();
     }
 
+
     /**
      * Update the RecylerView Data
      *
      * @param data Products
      */
-    private void updateData(List<Product> data) {
+    public void updateData(List<Product> data) {
 
         if (data != null) {
+            Log.v(ProductAdapter.class.getSimpleName(), "++++updateDATA++++ " + data.toString());
             mProductList.clear();
             mProductList.addAll(data);
             notifyDataSetChanged();

@@ -1,8 +1,12 @@
 package com.example.android.inventoryapp;
 
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +22,9 @@ import com.example.android.inventoryapp.data.Product;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
 import com.example.android.inventoryapp.helper.QueryHelper;
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    private final static int PRODUCTLOADERID = 1;
 
     private boolean isEditMode = false;
     private int productId;
@@ -77,8 +83,7 @@ public class EditActivity extends AppCompatActivity {
             productId = extras.getInt(ProductEntry.COLUMN_ID);
 
             Log.v(EditActivity.class.getSimpleName(), "ID -------- " + productId);
-            Product product = QueryHelper.loadProductWithId(this, productId);
-            if (product != null) setValuesForReferences(product);
+            getLoaderManager().restartLoader(PRODUCTLOADERID, null,this);
         }
     }
 
@@ -162,5 +167,27 @@ public class EditActivity extends AppCompatActivity {
         contentValues.put(ProductEntry.COLUMN_PRODUCTVARIANT, productVariant.getSelectedItemPosition());
 
         return contentValues;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(productId));
+        return new CursorLoader(this,uri,QueryHelper.PROJECTION,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        if(loader.getId() == PRODUCTLOADERID){
+            int[] columns = QueryHelper.createColumnIndexArray(data);
+            data.moveToFirst();
+            Product product = QueryHelper.createProduct(data,columns);
+            if (product != null) setValuesForReferences(product);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
