@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.android.inventoryapp.EditActivity;
 import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.Product;
+import com.example.android.inventoryapp.data.ProductContract;
 
 import java.util.List;
 
@@ -37,8 +38,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    Product product = mProductList.get(getAdapterPosition());
                     Intent intent = new Intent(mContext, EditActivity.class);
-                    //TODO PARSE DATA
+                    intent.putExtra(ProductContract.ProductEntry.COLUMN_ID, product.get_id());
                     mContext.startActivity(intent);
                 }
             });
@@ -68,7 +71,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         holder.idTextView.setText(String.valueOf(product.get_id()));
         holder.productNameTextView.setText(product.getProductname());
-        holder.productPriceTextView.setText(String.valueOf(product.getFormattedPrice()));
+        holder.productPriceTextView.setText(String.valueOf(product.getPrice()));
     }
 
     @Override

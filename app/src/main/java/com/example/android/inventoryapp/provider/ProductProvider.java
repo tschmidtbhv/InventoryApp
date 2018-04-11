@@ -16,6 +16,8 @@ import com.example.android.inventoryapp.data.ProductContract;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
 import com.example.android.inventoryapp.data.ProductDbHelper;
 
+import java.util.Arrays;
+
 /**
  * InventoryApp
  * Created by Thomas Schmidt on 10.04.2018.
@@ -58,11 +60,12 @@ public class ProductProvider extends ContentProvider {
 
             case PRODUCTS:
                 Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS");
-                cursor = loadProducts(uri, projection);
+                cursor = loadProducts(uri, projection, true);
                 break;
 
             case PRODUCT_ID:
                 Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS ID");
+                cursor = loadProducts(uri, projection, false);
                 break;
             default:
                 throw new IllegalArgumentException("INSERT NOT ALLOWED FOR " + uri);
@@ -71,14 +74,24 @@ public class ProductProvider extends ContentProvider {
         return cursor;
     }
 
-    private Cursor loadProducts(Uri uri, String[] projection) {
+    private Cursor loadProducts(Uri uri, String[] projection, boolean loadAll) {
 
         SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if(!loadAll) {
+            selection = ProductEntry.COLUMN_ID + "=?";
+            selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+            Log.v(ProductProvider.class.getSimpleName(), "----- SELECTION " + Arrays.toString(selectionArgs));
+        }
+
         Cursor cursor = database.query(
                 ProductEntry.TABLENAME,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 null);

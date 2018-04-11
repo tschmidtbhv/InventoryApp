@@ -3,6 +3,7 @@ package com.example.android.inventoryapp;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +14,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.android.inventoryapp.data.Product;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
+import com.example.android.inventoryapp.helper.QueryHelper;
 
 public class EditActivity extends AppCompatActivity {
+
+    private boolean isEditMode = false;
+    private int productId;
 
     EditText productName;
     EditText productPrice;
@@ -28,18 +34,12 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
         setupActionBar();
         setReferences();
+        setValuesIfNeeded();
     }
 
-    private void setReferences() {
-        productName = findViewById(R.id.prod_name);
-        productPrice = findViewById(R.id.prod_price);
-        productQuantity = findViewById(R.id.prod_quantity);
-        productSupplierName = findViewById(R.id.prod_supplier_name);
-        productSupplierPhone = findViewById(R.id.prod_supplier_phone);
-        productVariant = findViewById(R.id.prod_variant_spinner);
-    }
 
     /**
      * Setup for ActionBar
@@ -52,6 +52,50 @@ public class EditActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Set initial references to views
+     */
+    private void setReferences() {
+        productName = findViewById(R.id.prod_name);
+        productPrice = findViewById(R.id.prod_price);
+        productQuantity = findViewById(R.id.prod_quantity);
+        productSupplierName = findViewById(R.id.prod_supplier_name);
+        productSupplierPhone = findViewById(R.id.prod_supplier_phone);
+        productVariant = findViewById(R.id.prod_variant_spinner);
+    }
+
+    /**
+     * Checks the bundle extras
+     * Has extras it will load the given Product ID
+     */
+    private void setValuesIfNeeded() {
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+
+            isEditMode = true;
+            productId = extras.getInt(ProductEntry.COLUMN_ID);
+
+            Log.v(EditActivity.class.getSimpleName(), "ID -------- " +productId);
+            Product product = QueryHelper.loadProductWithId(this, productId);
+            if(product != null)setValuesForReferences(product);
+        }
+    }
+
+    /**
+     * Displays Values for given Product
+     * @param product contains informations
+     */
+    private void setValuesForReferences(Product product) {
+
+        productName.setText(product.getProductname());
+        productPrice.setText(String.valueOf(product.getPrice()));
+        productQuantity.setText(String.valueOf(product.getQuantity()));
+        productSupplierName.setText(product.getSuppliername());
+        productSupplierPhone.setText(product.getSupplierphonenr());
+        productVariant.setSelection(product.getVariant());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_menu, menu);
@@ -62,7 +106,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.saveproduct) {
-            boolean saved = saveDataIntoDataBase();
+            boolean saved = QueryHelper.saveDataIntoDataBase(this, getValuesFromViews(),productId);
 
             if (saved) {
                 backHome();
@@ -76,6 +120,10 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Get back to MainActivity
+     *
+     */
     private void backHome() {
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -83,13 +131,12 @@ public class EditActivity extends AppCompatActivity {
         finish();
     }
 
+
     /**
-     * Save Date into Database
-     *
-     * @return successfull saved or not
+     * Get the Values from the Views
+     * @return ContentValues
      */
-    private boolean saveDataIntoDataBase() {
-        Log.v(EditActivity.class.getSimpleName(), "saved");
+    private ContentValues getValuesFromViews() {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ProductEntry.COLUMN_PRODUCTNAME, productName.getText().toString());
@@ -99,8 +146,6 @@ public class EditActivity extends AppCompatActivity {
         contentValues.put(ProductEntry.COLUMN_SUPPLIER_PHONENR, productSupplierPhone.getText().toString());
         contentValues.put(ProductEntry.COLUMN_PRODUCTVARIANT, productVariant.getSelectedItemPosition());
 
-        ContentResolver resolver = getContentResolver();
-        resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI, contentValues);
-        return true;
+        return contentValues;
     }
 }
