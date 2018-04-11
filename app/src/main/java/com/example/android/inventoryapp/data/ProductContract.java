@@ -1,5 +1,6 @@
 package com.example.android.inventoryapp.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,6 +9,12 @@ import android.provider.BaseColumns;
  * Created by Thomas Schmidt on 09.04.2018.
  */
 public class ProductContract {
+
+    public final static String PRODUCTS_PATH = "products";
+
+    public final static String CONTENT_AUTHORITY = "com.example.android.inventoryapp";
+
+    public final static Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     //Prevent from instantiate
     private ProductContract() {
@@ -18,6 +25,8 @@ public class ProductContract {
      * Inner Class to define DB Constants
      */
     public static final class ProductEntry implements BaseColumns {
+
+        public final static Uri PRODUCTS_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PRODUCTS_PATH);
 
         //Name for the DB Table
         public final static String TABLENAME = "products";
@@ -61,6 +70,8 @@ public class ProductContract {
          * Optional value if the product has variants
          * <p>
          * possible product variants are {@link #PRODUCTVARIANT_NO_VARIANT},
+         * {@link #PRODUCTVARIANT_SIZE_S}, {@link #PRODUCTVARIANT_SIZE_M}
+         * {@link #PRODUCTVARIANT_SIZE_L} or {@link #PRODUCTVARIANT_SIZE_XL}
          * <p>
          * Type INTEGER
          * DEFAULT 0
@@ -89,6 +100,19 @@ public class ProductContract {
          * Possible product variants
          */
         public static final int PRODUCTVARIANT_NO_VARIANT = 0;
+        public static final int PRODUCTVARIANT_SIZE_S = 1;
+        public static final int PRODUCTVARIANT_SIZE_M = 2;
+        public static final int PRODUCTVARIANT_SIZE_L = 3;
+        public static final int PRODUCTVARIANT_SIZE_XL = 4;
+
+        public static boolean isValidVariant(int variant) {
+            return (variant == PRODUCTVARIANT_NO_VARIANT
+                    || variant == PRODUCTVARIANT_SIZE_S
+                    || variant == PRODUCTVARIANT_SIZE_M
+                    || variant == PRODUCTVARIANT_SIZE_L
+                    || variant == PRODUCTVARIANT_SIZE_XL);
+
+        }
 
     }
 }
