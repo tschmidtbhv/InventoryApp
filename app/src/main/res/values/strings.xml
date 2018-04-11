@@ -19,7 +19,8 @@
     <string name="save_product">Save Product</string>
     <string name="name_required">Product name is required</string>
     <string name="variant_required">Product variant required</string>
-    <string name="price_required">rice can`t be less than zero</string>
+    <string name="price_required">Price can`t be less than zero</string>
     <string name="update_error">There was an error while saving</string>
     <string name="delete_error">There was an error while saving</string>
+    <string name="delete_product">Delete Product</string>
 </resources>

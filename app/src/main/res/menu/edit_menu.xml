@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/saveproduct"
-        android:title="@string/save_product"
         android:icon="@drawable/ic_action_save"
+        android:title="@string/save_product"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deleteproduct"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/delete_product"
         app:showAsAction="always" />
 </menu>

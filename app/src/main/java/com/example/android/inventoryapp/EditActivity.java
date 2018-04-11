@@ -71,19 +71,20 @@ public class EditActivity extends AppCompatActivity {
     private void setValuesIfNeeded() {
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
+        if (extras != null) {
 
             isEditMode = true;
             productId = extras.getInt(ProductEntry.COLUMN_ID);
 
-            Log.v(EditActivity.class.getSimpleName(), "ID -------- " +productId);
+            Log.v(EditActivity.class.getSimpleName(), "ID -------- " + productId);
             Product product = QueryHelper.loadProductWithId(this, productId);
-            if(product != null)setValuesForReferences(product);
+            if (product != null) setValuesForReferences(product);
         }
     }
 
     /**
      * Displays Values for given Product
+     *
      * @param product contains informations
      */
     private void setValuesForReferences(Product product) {
@@ -98,31 +99,44 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.edit_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.deleteproduct);
+        if (!isEditMode) menuItem.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.saveproduct) {
-            boolean saved = QueryHelper.saveDataIntoDataBase(this, getValuesFromViews(),productId);
+        switch (item.getItemId()) {
 
-            if (saved) {
+            case R.id.saveproduct:
+                boolean saved = QueryHelper.saveDataIntoDataBase(this, getValuesFromViews(), productId);
+
+                if (saved) {
+                    backHome();
+                } else {
+                    Toast.makeText(this, getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.deleteproduct:
+                int id = QueryHelper.deleteItemWithId(this,productId);
+                if(id != -1)backHome();
+                break;
+
+            default:
                 backHome();
-            } else {
-                Toast.makeText(this, getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            backHome();
+                break;
         }
+
 
         return true;
     }
 
     /**
      * Get back to MainActivity
-     *
      */
     private void backHome() {
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
@@ -134,6 +148,7 @@ public class EditActivity extends AppCompatActivity {
 
     /**
      * Get the Values from the Views
+     *
      * @return ContentValues
      */
     private ContentValues getValuesFromViews() {
