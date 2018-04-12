@@ -7,4 +7,5 @@
     <dimen name="marginLR">16dp</dimen>
     <dimen name="marging_objects">8dp</dimen>
     <dimen name="title_text_size">18sp</dimen>
+    <dimen name="suptitle_text_size">16sp</dimen>
 </resources>

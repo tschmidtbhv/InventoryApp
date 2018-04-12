@@ -1,5 +1,6 @@
 package com.example.android.inventoryapp.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -95,6 +96,27 @@ public class ProductContract {
 
         public final static String COLUMN_SUPPLIER_PHONENR = "supplierphonenr";
 
+
+        /**
+         * MIME type for list of products
+         */
+
+        public final static String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+                + "/"
+                + CONTENT_AUTHORITY
+                + "/"
+                + PRODUCTS_PATH;
+
+
+        /**
+         * MIMIE type for single item
+         */
+
+        public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+                + "/"
+                + CONTENT_AUTHORITY
+                + "/"
+                + PRODUCTS_PATH;
 
         /**
          * Possible product variants

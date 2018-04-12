@@ -141,10 +141,12 @@ public final class QueryHelper {
         ContentResolver resolver = context.getContentResolver();
         if(productId > 0){
             Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(productId));
-            resolver.update(uri,
+            int id = resolver.update(uri,
                     contentValues,
                     null,
                     null);
+
+            return id != -1;
         }else {
             resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI, contentValues);
         }
