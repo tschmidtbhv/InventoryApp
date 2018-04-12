@@ -4,20 +4,23 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.EditActivity;
 import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.Product;
 import com.example.android.inventoryapp.data.ProductContract;
-import com.example.android.inventoryapp.helper.QueryHelper;
+import com.example.android.inventoryapp.helper.Config;
 
 import java.util.List;
 
@@ -25,7 +28,12 @@ import java.util.List;
  * InventoryApp
  * Created by Thomas Schmidt on 09.04.2018.
  */
+
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+
+    public interface ReloadInterface {
+        void reload();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -35,8 +43,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         Button cartButton;
 
-        public ViewHolder(View itemView) {
+
+        public ViewHolder(final View itemView) {
             super(itemView);
+
 
             productNameTextView = itemView.findViewById(R.id.name);
             productPriceTextView = itemView.findViewById(R.id.price);
@@ -48,22 +58,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     Product product = mProductList.get(getAdapterPosition());
-                    Uri uri = Uri.withAppendedPath(ProductContract.ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(product.get_id()));
-                    ContentResolver resolver = mContext.getContentResolver();
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(ProductContract.ProductEntry.COLUMN_PRODUCTQUANTITY, product.getQuantity() - 1);
+                    int changedQuantity = product.getQuantity() - 1;
+                    if (changedQuantity >= Config.MINIMUMQUANTITY) {
 
-                    resolver.update(uri,
-                            contentValues,
-                            null,
-                            null);
+                        Uri uri = Uri.withAppendedPath(ProductContract.ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(product.get_id()));
+                        ContentResolver resolver = mContext.getContentResolver();
 
-                    updateData(QueryHelper.loadContentFromDb(mContext));
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(ProductContract.ProductEntry.COLUMN_PRODUCTQUANTITY, changedQuantity);
+
+                        resolver.update(uri,
+                                contentValues,
+                                null,
+                                null);
+
+                        ReloadInterface reloadInterface = (ReloadInterface) mContext;
+                        reloadInterface.reload();
+                    } else {
+                        Toast.makeText(mContext, mContext.getString(R.string.quantity_count), Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener()
+
+            {
                 @Override
                 public void onClick(View v) {
 
@@ -78,6 +98,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     private Context mContext;
     private List<Product> mProductList;
+    private Cursor mCursor;
 
     public ProductAdapter(Context mContext, List<Product> productList) {
         this.mContext = mContext;
@@ -107,14 +128,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return mProductList.size();
     }
 
+
     /**
      * Update the RecylerView Data
      *
      * @param data Products
      */
-    private void updateData(List<Product> data) {
+    public void updateData(List<Product> data) {
 
         if (data != null) {
+            Log.v(ProductAdapter.class.getSimpleName(), "++++updateDATA++++ " + data.toString());
             mProductList.clear();
             mProductList.addAll(data);
             notifyDataSetChanged();

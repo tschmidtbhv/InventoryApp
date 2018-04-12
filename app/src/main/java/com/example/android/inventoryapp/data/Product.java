@@ -96,4 +96,17 @@ public class Product {
     public void setSupplierphonenr(String supplierphonenr) {
         this.supplierphonenr = supplierphonenr;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "_id=" + _id +
+                ", productname='" + productname + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", variant=" + variant +
+                ", suppliername='" + suppliername + '\'' +
+                ", supplierphonenr='" + supplierphonenr + '\'' +
+                '}';
+    }
 }

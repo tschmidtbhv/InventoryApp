@@ -20,7 +20,21 @@
     <string name="name_required">Product name is required</string>
     <string name="variant_required">Product variant required</string>
     <string name="price_required">Price can`t be less than zero</string>
+    <string name="quantity_count">Quantity can`t less than zero</string>
     <string name="update_error">There was an error while saving</string>
     <string name="delete_error">There was an error while saving</string>
     <string name="delete_product">Delete Product</string>
+    <string name="confirm_delete_product">Do you really want to delete that product?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="call_supplier">Call Supplier</string>
+    <string name="input_required">Input required</string>
+    <string name="initial_quantity">0</string>
+    <string name="you_modified">You modified your input do you really want to leave?</string>
+    <string name="modified">Modified input</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="no_content">No content. Please add a product</string>
 </resources>

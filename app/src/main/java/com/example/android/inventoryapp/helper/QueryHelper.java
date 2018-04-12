@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.R;
@@ -31,7 +33,7 @@ public final class QueryHelper {
             + ProductEntry.COLUMN_SUPPLIERNAME + " TEXT NOT NULL, "
             + ProductEntry.COLUMN_SUPPLIER_PHONENR + " TEXT); ";
 
-    private static String[] PROJECTION = {
+    public static String[] PROJECTION = {
             ProductEntry.COLUMN_ID,
             ProductEntry.COLUMN_PRODUCTNAME,
             ProductEntry.COLUMN_PRODUCTPRICE,
@@ -41,56 +43,16 @@ public final class QueryHelper {
             ProductEntry.COLUMN_SUPPLIER_PHONENR
     };
 
-
-    /**
-     * Load * product data from Database
-     */
-    public static List<Product> loadContentFromDb(Context context) {
-
-
-        Cursor cursor = context.getContentResolver().query(
-                ProductEntry.PRODUCTS_CONTENT_URI,
-                PROJECTION,
-                null,
-                null,
-                null);
-
-
-        return createProductListFromCursor(cursor);
-    }
-
-
-    public static Product loadProductWithId(Context context, int id) {
-
-        Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(id));
-
-        Cursor cursor = context.getContentResolver().query(uri,
-                PROJECTION,
-                null,
-                null,
-                null);
-
-        if (cursor == null) return null;
-
-        cursor.moveToFirst();
-
-        int[] columns = createColumnIndexArray(cursor);
-        Product product = createProduct(cursor, columns);
-
-        return product;
-    }
-
     /**
      * Create the Product List from given cursor
      *
      * @param cursor cursor db
      * @return List of Products from DB
      */
-    private static List<Product> createProductListFromCursor(Cursor cursor) {
+    public static List<Product> createProductListFromCursor(Cursor cursor) {
         List<Product> products = new ArrayList<>();
         try {
             if (cursor != null) {
-
                 int[] columns = createColumnIndexArray(cursor);
 
                 while (cursor.moveToNext()) {
@@ -105,7 +67,14 @@ public final class QueryHelper {
         return products;
     }
 
-    private static Product createProduct(Cursor cursor, int[] columns) {
+    /**
+     * Create Product from given cursor and columns
+     *
+     * @param cursor db cursor
+     * @param columns to get values
+     * @return Product
+     */
+    public static Product createProduct(Cursor cursor, int[] columns) {
 
         int id = cursor.getInt(columns[0]);
         String name = cursor.getString(columns[1]);
@@ -115,7 +84,7 @@ public final class QueryHelper {
         String supplier = cursor.getString(columns[5]);
         String supplierNr = cursor.getString(columns[6]);
 
-        Product product = new Product(
+        return new Product(
                 id,
                 name,
                 price,
@@ -123,11 +92,15 @@ public final class QueryHelper {
                 variant,
                 supplier,
                 supplierNr);
-
-        return product;
     }
 
-    private static int[] createColumnIndexArray(Cursor cursor) {
+    /**
+     * Create Columns Array from given cursor
+     * Also see Product Contract for Product Columns
+     * @param cursor db cursor
+     * @return columns array
+     */
+    public static int[] createColumnIndexArray(Cursor cursor) {
         int idColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_ID);
         int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCTNAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCTPRICE);
@@ -136,38 +109,13 @@ public final class QueryHelper {
         int supplierColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIERNAME);
         int suppliernrColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_PHONENR);
 
-        int[] columns = new int[]{idColumnIndex, nameColumnIndex, priceColumnIndex, quantityColumnIndex, variantColumnIndex, supplierColumnIndex, suppliernrColumnIndex};
-        return columns;
-    }
-
-    /**
-     * Insert Dummy data into DB
-     *
-     * @param context Act Context
-     * @param count   how many dummy data will create
-     */
-    public static void createDummyDataInDataBase(Context context, int count) {
-
-        ContentResolver resolver = context.getContentResolver();
-
-        for (int i = 0; i < count; i++) {
-
-            int tempProductCounter = i + 1;
-            ContentValues values = new ContentValues();
-            values.put(ProductEntry.COLUMN_PRODUCTNAME, context.getString(R.string.productname, tempProductCounter));
-            values.put(ProductEntry.COLUMN_PRODUCTPRICE, Config.DUMMYPRICE);
-            values.put(ProductEntry.COLUMN_PRODUCTQUANTITY, Config.DUMMYQUANTITY);
-            values.put(ProductEntry.COLUMN_PRODUCTVARIANT, ProductEntry.PRODUCTVARIANT_NO_VARIANT);
-            values.put(ProductEntry.COLUMN_SUPPLIERNAME, context.getString(R.string.suppliername, tempProductCounter));
-            values.put(ProductEntry.COLUMN_SUPPLIER_PHONENR, Config.DUMMYPHONENUMBER);
-
-            Uri rowUri = resolver.insert(ProductEntry.PRODUCTS_CONTENT_URI, values);
-            if (rowUri == null) {
-                Toast.makeText(context, context.getString(R.string.insert_error), Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-
+        return new int[]{idColumnIndex,
+                nameColumnIndex,
+                priceColumnIndex,
+                quantityColumnIndex,
+                variantColumnIndex,
+                supplierColumnIndex,
+                suppliernrColumnIndex};
     }
 
     /**
@@ -179,7 +127,6 @@ public final class QueryHelper {
      */
     public static int deleteItemWithId(Context context, int id) {
         ContentResolver resolver = context.getContentResolver();
-
         Uri uri = Uri.withAppendedPath(ProductEntry.PRODUCTS_CONTENT_URI, String.valueOf(id));
         return resolver.delete(uri, null, null);
     }
