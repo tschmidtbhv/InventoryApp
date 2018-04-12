@@ -37,4 +37,5 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
     <string name="no_content">No content. Please add a product</string>
+    <string name="price">Price: %s</string>
 </resources>

@@ -88,14 +88,26 @@ public class ProductProvider extends ContentProvider {
                 null,
                 null);
 
-
         return cursor;
     }
 
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+
+        int matchId = sUriMatcher.match(uri);
+
+        switch (matchId) {
+            case PRODUCTS:
+                return ProductEntry.CONTENT_LIST_TYPE;
+
+            case PRODUCT_ID:
+                return ProductEntry.CONTENT_ITEM_TYPE;
+
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+
+        }
     }
 
     @Nullable
@@ -138,7 +150,6 @@ public class ProductProvider extends ContentProvider {
                 return database.delete(ProductEntry.TABLENAME, selection, selectionArgs);
 
             default:
-
                 throw new IllegalArgumentException(getContext().getString(R.string.delete_error));
 
         }
@@ -160,6 +171,8 @@ public class ProductProvider extends ContentProvider {
             case PRODUCT_ID:
                 selection = ProductEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+                //is id -1 check in QueryHelper
                 return database.update(ProductEntry.TABLENAME, values, selection, selectionArgs);
             default:
 

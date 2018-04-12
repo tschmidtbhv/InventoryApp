@@ -119,7 +119,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         Product product = mProductList.get(position);
 
         holder.productNameTextView.setText(product.getProductname());
-        holder.productPriceTextView.setText(String.valueOf(product.getPrice()));
+        holder.productPriceTextView.setText(mContext.getString(R.string.price, String.valueOf(product.getPrice())));
         holder.productQuantityTextView.setText(String.valueOf(product.getQuantity()));
     }
 
@@ -137,7 +137,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void updateData(List<Product> data) {
 
         if (data != null) {
-            Log.v(ProductAdapter.class.getSimpleName(), "++++updateDATA++++ " + data.toString());
+
             mProductList.clear();
             mProductList.addAll(data);
             notifyDataSetChanged();
