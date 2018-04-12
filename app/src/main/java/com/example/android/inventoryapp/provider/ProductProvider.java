@@ -9,14 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.ProductContract;
 import com.example.android.inventoryapp.data.ProductContract.ProductEntry;
 import com.example.android.inventoryapp.data.ProductDbHelper;
-
-import java.util.Arrays;
 
 /**
  * InventoryApp
@@ -51,20 +48,16 @@ public class ProductProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
-        Log.v(ProductProvider.class.getSimpleName(), "query -----------------------------------");
-
         int matchID = sUriMatcher.match(uri);
 
         Cursor cursor = null;
         switch (matchID) {
 
             case PRODUCTS:
-                Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS");
                 cursor = loadProducts(uri, projection, true);
                 break;
 
             case PRODUCT_ID:
-                Log.v(ProductProvider.class.getSimpleName(), "query PRODUCTS ID");
                 cursor = loadProducts(uri, projection, false);
                 break;
             default:
@@ -81,10 +74,9 @@ public class ProductProvider extends ContentProvider {
         String selection = null;
         String[] selectionArgs = null;
 
-        if(!loadAll) {
+        if (!loadAll) {
             selection = ProductEntry.COLUMN_ID + "=?";
             selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-            Log.v(ProductProvider.class.getSimpleName(), "----- SELECTION " + Arrays.toString(selectionArgs));
         }
 
         Cursor cursor = database.query(
@@ -110,7 +102,6 @@ public class ProductProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
 
-        Log.v(ProductProvider.class.getSimpleName(), "INSERT ");
         String name = values.getAsString(ProductEntry.COLUMN_PRODUCTNAME);
         if (name == null)
             throw new IllegalArgumentException(getContext().getString(R.string.name_required) + uri);
@@ -138,7 +129,6 @@ public class ProductProvider extends ContentProvider {
         int matchId = sUriMatcher.match(uri);
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
 
         switch (matchId) {
 

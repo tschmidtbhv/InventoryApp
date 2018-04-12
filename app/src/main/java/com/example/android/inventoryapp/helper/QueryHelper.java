@@ -106,6 +106,13 @@ public final class QueryHelper {
         return products;
     }
 
+    /**
+     * Create Product from given cursor and columns
+     *
+     * @param cursor db cursor
+     * @param columns to get values
+     * @return Product
+     */
     public static Product createProduct(Cursor cursor, int[] columns) {
 
         int id = cursor.getInt(columns[0]);
@@ -128,6 +135,12 @@ public final class QueryHelper {
         return product;
     }
 
+    /**
+     * Create Columns Array from given cursor
+     * Also see Product Contract for Product Columns
+     * @param cursor db cursor
+     * @return columns array
+     */
     public static int[] createColumnIndexArray(Cursor cursor) {
         int idColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_ID);
         int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCTNAME);

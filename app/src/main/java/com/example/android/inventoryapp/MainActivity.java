@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.android.inventoryapp.adapter.ProductAdapter;
 import com.example.android.inventoryapp.data.Product;
@@ -81,7 +83,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (loader.getId() == LOADERID) {
             if (data != null) {
-                productAdapter.updateData(QueryHelper.createProductListFromCursor(data));
+                List<Product> products = QueryHelper.createProductListFromCursor(data);
+                if(products.size() == 0) {
+                    TextView infoTextView = findViewById(R.id.infotext);
+                    infoTextView.setText(getString(R.string.no_content));
+                    infoTextView.setVisibility(View.VISIBLE);
+                }
+                productAdapter.updateData(products);
             }
         }
     }

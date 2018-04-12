@@ -10,4 +10,5 @@ public interface Config {
     int DUMMYPRICE = 10000;
     int DUMMYQUANTITY = 1;
     String DUMMYPHONENUMBER = "0123456789";
+    int MINIMUMQUANTITY = 0;
 }

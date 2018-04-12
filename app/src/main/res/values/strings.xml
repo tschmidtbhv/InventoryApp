@@ -28,4 +28,13 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="call_supplier">Call Supplier</string>
+    <string name="input_required">Input required</string>
+    <string name="initial_quantity">0</string>
+    <string name="you_modified">You modified your input do you really want to leave?</string>
+    <string name="modified">Modified input</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="no_content">No content. Please add a product</string>
 </resources>
