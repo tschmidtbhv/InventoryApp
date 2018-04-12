@@ -4,7 +4,7 @@
     <string name="productname">Product %d</string>
     <string name="suppliername">Supplier %d</string>
     <string name="title_activity_edit">EditActivity</string>
-    <string name="add_product">Add Product</string>
+    <string name="add_product">Add a Product</string>
     <string name="prod_name">Product Name</string>
     <string name="prod_price">Price</string>
     <string name="prod_quantity">Quantity</string>
@@ -38,4 +38,5 @@
     <string name="minus">-</string>
     <string name="no_content">No content. Please add a product</string>
     <string name="price">Price: %s</string>
+    <string name="edit_product">Edit Product</string>
 </resources>

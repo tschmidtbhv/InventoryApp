@@ -110,7 +110,12 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         setupActionBar();
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) isEditMode = true;
+        if (extras != null) {
+            isEditMode = true;
+            getSupportActionBar().setTitle(R.string.edit_product);
+        } else {
+            getSupportActionBar().setTitle(R.string.add_product);
+        }
 
         setReferences();
         setValuesIfNeeded(extras);
