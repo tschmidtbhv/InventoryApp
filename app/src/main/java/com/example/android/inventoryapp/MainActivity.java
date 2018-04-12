@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (loader.getId() == LOADERID) {
             if (data != null) {
                 List<Product> products = QueryHelper.createProductListFromCursor(data);
-                if(products.size() == 0) {
+                if (products.size() == 0) {
                     TextView infoTextView = findViewById(R.id.infotext);
                     infoTextView.setText(getString(R.string.no_content));
                     infoTextView.setVisibility(View.VISIBLE);
