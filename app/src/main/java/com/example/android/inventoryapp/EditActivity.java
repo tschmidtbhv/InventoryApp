@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -56,7 +55,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:" + phoneNr));
 
-            if(intent.resolveActivity(getPackageManager()) != null){
+            if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
         }
@@ -66,24 +65,32 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         @Override
         public void onClick(View v) {
 
-            int quantity = Integer.parseInt(productQuantity.getText().toString());
+            String quantityString = productQuantity.getText().toString().trim();
 
-            switch (v.getId()){
+            if (!TextUtils.isEmpty(quantityString)) {
 
-                case R.id.increaseButton:
-                    productQuantity.setText(String.valueOf(quantity + 1));
-                    break;
+                int quantity = Integer.parseInt(quantityString);
 
-                case R.id.deacreaseButton:
-                    int result = quantity - 1;
-                    if(result >= 0){
-                        productQuantity.setText(String.valueOf(result));
-                    }else {
-                        Toast.makeText(EditActivity.this, getString(R.string.quantity_count),Toast.LENGTH_SHORT).show();
-                    }
-                    break;
+                switch (v.getId()) {
 
+                    case R.id.increaseButton:
+                        productQuantity.setText(String.valueOf(quantity + 1));
+                        break;
+
+                    case R.id.deacreaseButton:
+                        int result = quantity - 1;
+                        if (result >= 0) {
+                            productQuantity.setText(String.valueOf(result));
+                        } else {
+                            Toast.makeText(EditActivity.this, getString(R.string.quantity_count), Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                }
+            } else {
+                productQuantity.setText(getString(R.string.initial_quantity));
             }
+
         }
     };
 
@@ -103,7 +110,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         setupActionBar();
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null) isEditMode = true;
+        if (extras != null) isEditMode = true;
 
         setReferences();
         setValuesIfNeeded(extras);
@@ -115,7 +122,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private void setupActionBar() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -131,7 +138,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         productSupplierName = findViewById(R.id.prod_supplier_name);
         productSupplierPhone = findViewById(R.id.prod_supplier_phone);
         productVariant = findViewById(R.id.prod_variant_spinner);
-        if(isEditMode) {
+        if (isEditMode) {
             callButton = findViewById(R.id.callsupplierButton);
             callButton.setVisibility(View.VISIBLE);
             callButton.setOnClickListener(callOnClickListener);
@@ -210,9 +217,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
 
             default:
-                if(checkModified()) {
+                if (checkModified()) {
                     showModifiedDialog();
-                }else {
+                } else {
                     backHome();
                 }
                 break;
@@ -228,7 +235,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
      * Check before the input
      */
     private void saveProduct() {
-        if(editComplete()) {
+        if (editComplete()) {
             boolean saved = QueryHelper.saveDataIntoDataBase(this, getValuesFromViews(), productId);
 
             if (saved) {
@@ -241,6 +248,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /**
      * Check the fields for input
+     *
      * @return
      */
     private boolean editComplete() {
@@ -253,8 +261,8 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         editTexts.add(productSupplierPhone);
 
         boolean canPass = true;
-        for(EditText editText : editTexts){
-            if(!checkView(editText)){
+        for (EditText editText : editTexts) {
+            if (!checkView(editText)) {
                 canPass = false;
             }
         }
@@ -265,7 +273,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean checkView(EditText editText) {
 
         String input = editText.getText().toString().trim();
-        if(TextUtils.isEmpty(input)){
+        if (TextUtils.isEmpty(input)) {
             editText.setError(getString(R.string.input_required));
             return false;
         }
@@ -285,8 +293,8 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onBackPressed() {
-        Log.v(EditActivity.class.getSimpleName(), "onBackPressed");
-        if(checkModified()) {
+
+        if (checkModified()) {
             showModifiedDialog();
             return;
         }
@@ -295,8 +303,8 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private boolean checkModified() {
-        if(isEditMode){
-            if(isModified) return true;
+        if (isEditMode) {
+            return isModified;
         }
         return false;
     }
@@ -304,7 +312,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     /**
      * Show the modified dialog
      */
-    private void showModifiedDialog(){
+    private void showModifiedDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.you_modified).setTitle(R.string.modified);
 
@@ -335,7 +343,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                return;
+                dialog.dismiss();
             }
         });
 
